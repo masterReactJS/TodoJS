@@ -3,7 +3,7 @@
     padding:0;
 }
 
-.nav-bar {
+.navBar {
     display: flex;
     background-color:#3D3D3D;
     height:40px;
@@ -18,7 +18,7 @@
     align-items: center;
 }
 
-.search-bar {
+.searchBar {
     background-color: inherit;
     border:#575757;
     border-radius: 4px;
@@ -36,7 +36,7 @@
     font-size:12px;
 }
 
-.search-bar:hover {
+.searchBar:hover {
     border:#575757;
     background-color: #575757;
     color:#CECECE;
@@ -46,13 +46,24 @@
     color: #CECECE;
 }
 
-.app-icon {
-    display: flex;
+.appIcon {
     font-size: 20px;
 }
 
-.notification-icons {
+.notificationIcons {
     display: flex;
+    align-items: center;
+}
+
+.settingsBox {
+    position:relative;
+}
+
+.card {
+    position: absolute;
+    top: 33px;
+    right: 15px;
+    display: none;
 }
 
 .fa {

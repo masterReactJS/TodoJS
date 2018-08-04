@@ -66,9 +66,19 @@
     display: none;
 }
 
+.list {
+    font-size: 10px;
+}
+
 .fa {
     color:#fff;
     margin:0px 20px;
+}
+
+.subIcons {
+    color: black;
+    padding: 0px;
+    margin: 0px 15px 0px 0px;
 }
 
 .fa:hover{

@@ -121,7 +121,25 @@
     color:#555555;
 }
 
-.inboxDetails {
+#tabDetails {
+    padding:50px;
+}
 
+.inboxHeading {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.plusIcon {
+    color:#555555;
+    margin:0 10px 0px 0px;
+}
+
+.taskDetails { 
+    margin-top:20px;
+}
+
+.taskDetails:hover {
+    cursor: pointer;
 }
 

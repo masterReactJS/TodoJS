@@ -8,6 +8,15 @@ var inboxDetails = `<span class="inboxHeading">Inbox</span>
                         <span id="addTask">Add Task</span>
                     </div>`;
 
+var addTaskArea = `<div class="container">
+                        <input type="text" class="taskName" placeholder="e.g. Conference on Wednesday as 15:00"/>
+                        <input placeholder="Schedule" class="schedule" type="text" onfocus="(this.type='date')">
+                   </div>
+                   <div class="buttonContainer">
+                        <input type="button" value="Add Task" class="addTask"/>
+                        <input type="button" value="Cancel" class="cancel"/>
+                   </div>`
+
 var currentDayDetails = `<div> Today </div>`
 var next7Days = `<div> Next 7 days </div>`
 
@@ -60,11 +69,13 @@ document.getElementById("calendar").addEventListener("click", function () {
     activateTab("calendar", next7Days);
 });
 
-document.getElementById("addTask").addEventListener("click", addTask);
+document.getElementById("tabDetails").addEventListener("click", addTasks);
 
-function addTask() {
-    let addTaskPage = document.getElementById("addTaskPage");
-    addTaskPage.innerHTML = "Task should be added here";
+function addTasks(event) {
+    if (event.target === document.getElementById("addTask")) {
+        let addTaskPage = document.getElementById("addTaskPage");
+        addTaskPage.innerHTML = addTaskArea;
+    }
 }
 
 

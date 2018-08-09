@@ -128,6 +128,8 @@
 .inboxHeading {
     font-size: 20px;
     font-weight: bold;
+    display: block;
+    margin-bottom: 20px;
 }
 
 .plusIcon {
@@ -136,10 +138,91 @@
 }
 
 .taskDetails { 
-    margin-top:20px;
+    display: inline;
 }
 
 .taskDetails:hover {
     cursor: pointer;
+}
+
+.container {
+    display: flex;
+    padding-left: 0px;
+}
+
+.taskName {
+    width: 400px;
+    height: 35px;
+    padding:10px;
+    border-color: #CCCECE;
+    border-radius: 5px;
+    border-style: solid;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+
+.schedule {
+    width:142px;
+    font-size: 12px;
+    height: 35px;
+    padding:10px;
+    border-color: #CCCECE;
+    border-radius: 5px;
+    border-style: solid;
+    border-left: none;
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+.buttonContainer {
+    margin-top:10px;
+    display: inline-block;
+}
+
+.addTask {
+    margin-right:5px;
+    padding:8px;
+    border-radius: 4px;
+    background-color: black;
+    color:white;
+    font-size: 12px;
+    font-weight: bold;
+    border: none;
+}
+
+.addTask:hover{
+    cursor: pointer;
+}
+
+.cancel {
+    border:none;
+    font-size: 15px;
+    background-color: #fff;
+}
+
+.cancel:hover {
+    cursor: pointer;
+}
+
+::-webkit-datetime-edit { padding: 0px }
+::-webkit-datetime-edit-text { color: red; }
+::-webkit-datetime-edit-month-field { color: blue; }
+::-webkit-datetime-edit-day-field { color: green; }
+::-webkit-datetime-edit-year-field { color: purple; }
+::-webkit-inner-spin-button { display: none; }
+::-webkit-calendar-picker-indicator { background: orange; }
+::-webkit-clear-button { padding:5px; }
+
+.taskName .schedule {
+  
+    border-collapse: collapse;
+}
+
+.schedule:focus, .taskName:focus {
+    outline: none;
+}
+
+::-webkit-input-placeholder { /* Chrome/Opera/Safari */
+    font-size:12px;
 }
 

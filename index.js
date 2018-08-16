@@ -78,7 +78,7 @@ function addTasks(event) {
     }
 }
 
-function getDiffBetweenDates(date1, date2){
+function getDiffBetweenDates(date1, date2) {
     var duration = moment.duration(date2.diff(date1));
     return duration.asDays() + 1;
 }
@@ -92,14 +92,18 @@ function addTaskButton() {
     let addTaskPage = document.getElementById("addTaskPage");
 
     //check whether ul is added or not
-    if(addTaskPage.getElementsByTagName("ul").length == 0){
+    if (addTaskPage.getElementsByTagName("ul").length == 0) {
         var createULList = document.createElement("ul");
         createULList.style.marginLeft = "20px";
-        addTaskPage.insertBefore(createULList,addTaskPage.childNodes[0]);
+        addTaskPage.insertBefore(createULList, addTaskPage.childNodes[0]);
     }
 
     //creating list items
     let createLIList = document.createElement("li");
+    createLIList.id = '_' + Math.random().toString(36).substr(2, 9);
+    createLIList.addEventListener("click", function () {
+        clickOnTask(createLIList.id)
+    })
     let textNode = document.createTextNode(taskName);
     let divNode = document.createElement("div");
     var scheduleNode;
@@ -109,16 +113,16 @@ function addTaskButton() {
     let createSpanNode2 = document.createElement("span");
 
     //check the difference between the dates
-    switch(Math.floor(getDiffBetweenDates(moment(new Date()),moment(schedule)))){
+    switch (Math.floor(getDiffBetweenDates(moment(new Date()), moment(schedule)))) {
         case 1:
             scheduleNode = document.createTextNode("Tomorrow");
-        break;
+            break;
         case -1:
             scheduleNode = document.createTextNode("Task overdue by 1 day");
-        break;
+            break;
         default:
-            scheduleNode = document.createTextNode(schedule);
-        break;
+            scheduleNode = document.createTextNode(moment(schedule).format("DD MMM"));
+            break;
     }
     createSpanNode2.appendChild(scheduleNode);
 
@@ -128,7 +132,7 @@ function addTaskButton() {
     createSpanNode2.style.fontSize = "12px";
     divNode.appendChild(createSpanNode1);
     divNode.appendChild(createSpanNode2);
-    
+
     //positioning list items
     divNode.style.display = "flex";
     divNode.style.justifyContent = "space-between";
@@ -148,5 +152,8 @@ function addTaskButton() {
     dateNode.value = "";
 }
 
+function clickOnTask(id) {
+    document.getElementById(id).remove();
+}
 
 

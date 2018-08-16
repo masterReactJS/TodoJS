@@ -13,7 +13,7 @@ var addTaskArea = `<div class="container">
                         <input placeholder="Schedule" class="schedule" type="text" onfocus="(this.type='date')">
                    </div>
                    <div class="buttonContainer">
-                        <input type="button" value="Add Task" class="addTask"/>
+                        <input type="button" value="Add Task" class="addTask" onclick="addTaskButton()"/>
                         <input type="button" value="Cancel" class="cancel"/>
                    </div>`
 
@@ -76,6 +76,76 @@ function addTasks(event) {
         let addTaskPage = document.getElementById("addTaskPage");
         addTaskPage.innerHTML = addTaskArea;
     }
+}
+
+function getDiffBetweenDates(date1, date2){
+    var duration = moment.duration(date2.diff(date1));
+    return duration.asDays() + 1;
+}
+
+function addTaskButton() {
+    //fetching taskName and schedule from ui
+    let taskNode = document.getElementsByClassName("taskName")[0];
+    let taskName = taskNode.value;
+    let dateNode = document.getElementsByClassName("schedule")[0];
+    let schedule = dateNode.value;
+    let addTaskPage = document.getElementById("addTaskPage");
+
+    //check whether ul is added or not
+    if(addTaskPage.getElementsByTagName("ul").length == 0){
+        var createULList = document.createElement("ul");
+        createULList.style.marginLeft = "20px";
+        addTaskPage.insertBefore(createULList,addTaskPage.childNodes[0]);
+    }
+
+    //creating list items
+    let createLIList = document.createElement("li");
+    let textNode = document.createTextNode(taskName);
+    let divNode = document.createElement("div");
+    var scheduleNode;
+    createLIList.appendChild(divNode);
+    let createSpanNode1 = document.createElement("span");
+    createSpanNode1.appendChild(textNode);
+    let createSpanNode2 = document.createElement("span");
+
+    //check the difference between the dates
+    switch(Math.floor(getDiffBetweenDates(moment(new Date()),moment(schedule)))){
+        case 1:
+            scheduleNode = document.createTextNode("Tomorrow");
+        break;
+        case -1:
+            scheduleNode = document.createTextNode("Task overdue by 1 day");
+        break;
+        default:
+            scheduleNode = document.createTextNode(schedule);
+        break;
+    }
+    createSpanNode2.appendChild(scheduleNode);
+
+    //styling list items
+    createSpanNode1.style.fontSize = "14px";
+    createSpanNode2.style.color = "grey";
+    createSpanNode2.style.fontSize = "12px";
+    divNode.appendChild(createSpanNode1);
+    divNode.appendChild(createSpanNode2);
+    
+    //positioning list items
+    divNode.style.display = "flex";
+    divNode.style.justifyContent = "space-between";
+
+    //styling list 
+    createLIList.style.listStyleType = "circle";
+    createLIList.style.content = "•";
+    createLIList.style.fontSize = "100%";
+    createLIList.style.marginBottom = "15px";
+    createLIList.style.marginRight = "15px";
+
+    //appending li to ul and ul to dom
+    addTaskPage.getElementsByTagName("ul")[0].appendChild(createLIList);
+
+    //clear the text after submit
+    taskNode.value = "";
+    dateNode.value = "";
 }
 
 

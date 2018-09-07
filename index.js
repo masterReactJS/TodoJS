@@ -1,6 +1,12 @@
 var settingsButton = document.getElementsByClassName("fa-cog");
 var settingsList = document.getElementById("settingsList");
 var tabDetails = document.getElementById("tabDetails");
+var completedTasks = [];
+var schedule = [];
+var count = 0;
+var taskArray = [];
+
+
 
 var inboxDetails = `<span class="inboxHeading">Inbox</span>
                     <div class="taskDetails" id="addTaskPage">
@@ -14,7 +20,7 @@ var addTaskArea = `<div class="container">
                    </div>
                    <div class="buttonContainer">
                         <input type="button" value="Add Task" class="addTask" onclick="addTaskButton()"/>
-                        <input type="button" value="Cancel" class="cancel"/>
+                        <input type="button" value="Cancel" class="cancel" onclick="cancelEventHandler()"/>
                    </div>`
 
 var currentDayDetails = `<div> Today </div>`
@@ -45,28 +51,71 @@ function deactivateTabs(item) {
     document.getElementById(item).style.backgroundColor = "#FAFAFA";
 }
 
+//activate tabs function
 function activateTab(item1, item2) {
+    tabDetails.innerHTML = "";
+    let counter = 0;
     document.getElementById(item1).style.backgroundColor = "#fff";
-    tabDetails.innerHTML = item2;
+    item2.forEach(item => {
+        let timeStamp = item.getElementsByTagName("span")[1];
+        let timeDiff = Math.floor(moment.duration(moment(new Date()).diff(moment(taskArray[counter++].schedule))).asDays());
+        if (timeDiff < 0) {
+            timeStamp.textContent = `Well Done!!! You completed it ${Math.abs(timeDiff)} days before`;
+            timeStamp.style.color = "#006400";
+            timeStamp.style.fontWeight = 'bold';
+        }
+        else if (timeDiff == 0) {
+            timeStamp.textContent = `Task completed on time`;
+            timeStamp.style.color = "#228B22";
+            timeStamp.style.fontWeight = 'bold';
+        }
+        else if (timeDiff > 0) {
+            timeStamp.textContent = `Task delayed by ${Math.abs(timeDiff)} days`;
+            timeStamp.style.color = "red";
+            timeStamp.style.fontWeight = 'bold';
+        }
+        timeStamp.style.marginBottom = '15px';
+        let parent = item.childNodes[0];
+        parent.replaceChild(parent.childNodes[1], timeStamp);
+        tabDetails.innerHTML += item.innerHTML;
+    });
+}
+
+function handleTabs(tabName) {
+    document.getElementById(tabName).addEventListener("click", function () {
+        listOfTabs.forEach(item => {
+            item != tabName ? deactivateTabs(item) : activateTab(tabName)
+        })
+    })
 }
 
 //Activate and Deactivate Tabs based on selection and also toggle tab details
 document.getElementById("inbox").addEventListener("click", function () {
     deactivateTabs("currentDayCalendar");
     deactivateTabs("calendar");
+    deactivateTabs("history");
     activateTab("inbox", inboxDetails);
 });
 
 document.getElementById("currentDayCalendar").addEventListener("click", function () {
     deactivateTabs("calendar");
     deactivateTabs("inbox");
+    deactivateTabs("history");
     activateTab("currentDayCalendar", currentDayDetails);
 });
 
 document.getElementById("calendar").addEventListener("click", function () {
     deactivateTabs("currentDayCalendar");
     deactivateTabs("inbox");
+    deactivateTabs("history");
     activateTab("calendar", next7Days);
+});
+
+document.getElementById("history").addEventListener("click", function () {
+    deactivateTabs("currentDayCalendar");
+    deactivateTabs("inbox");
+    deactivateTabs("calendar");
+    activateTab("history", completedTasks);
 });
 
 document.getElementById("tabDetails").addEventListener("click", addTasks);
@@ -85,11 +134,13 @@ function getDiffBetweenDates(date1, date2) {
 
 function addTaskButton() {
     //fetching taskName and schedule from ui
+    var tasks = {};
     let taskNode = document.getElementsByClassName("taskName")[0];
-    let taskName = taskNode.value;
     let dateNode = document.getElementsByClassName("schedule")[0];
-    let schedule = dateNode.value;
     let addTaskPage = document.getElementById("addTaskPage");
+    tasks.taskName = taskNode.value;
+    tasks.schedule = dateNode.value;
+    taskArray.push(tasks);
 
     //check whether ul is added or not
     if (addTaskPage.getElementsByTagName("ul").length == 0) {
@@ -103,25 +154,30 @@ function addTaskButton() {
     createLIList.id = '_' + Math.random().toString(36).substr(2, 9);
     createLIList.addEventListener("click", function () {
         clickOnTask(createLIList.id)
-    })
-    let textNode = document.createTextNode(taskName);
+    });
+
+
+    let textNode = document.createTextNode(taskArray[taskArray.length - 1].taskName);
     let divNode = document.createElement("div");
-    var scheduleNode;
     createLIList.appendChild(divNode);
     let createSpanNode1 = document.createElement("span");
     createSpanNode1.appendChild(textNode);
     let createSpanNode2 = document.createElement("span");
+    var scheduleNode;
 
     //check the difference between the dates
-    switch (Math.floor(getDiffBetweenDates(moment(new Date()), moment(schedule)))) {
+    switch (Math.floor(getDiffBetweenDates(moment(new Date()), moment(taskArray[taskArray.length - 1].schedule)))) {
         case 1:
             scheduleNode = document.createTextNode("Tomorrow");
             break;
         case -1:
             scheduleNode = document.createTextNode("Task overdue by 1 day");
             break;
+        case 0:
+            scheduleNode = document.createTextNode("Today");
+            break;
         default:
-            scheduleNode = document.createTextNode(moment(schedule).format("DD MMM"));
+            scheduleNode = document.createTextNode(moment(taskArray[taskArray.length - 1].schedule).format("DD MMM"));
             break;
     }
     createSpanNode2.appendChild(scheduleNode);
@@ -136,6 +192,7 @@ function addTaskButton() {
     //positioning list items
     divNode.style.display = "flex";
     divNode.style.justifyContent = "space-between";
+
 
     //styling list 
     createLIList.style.listStyleType = "circle";
@@ -153,7 +210,9 @@ function addTaskButton() {
 }
 
 function clickOnTask(id) {
-    document.getElementById(id).remove();
+    let completedTask = document.getElementById(id);
+    completedTasks.push(completedTask);
+    completedTask.remove();
 }
 
 

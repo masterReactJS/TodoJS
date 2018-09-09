@@ -5,8 +5,7 @@ var completedTasks = [];
 var schedule = [];
 var count = 0;
 var taskArray = [];
-
-
+var tabs = ['currentDayCalendar', 'calendar', 'inbox', 'history'];
 
 var inboxDetails = `<span class="inboxHeading">Inbox</span>
                     <div class="taskDetails" id="addTaskPage">
@@ -26,13 +25,12 @@ var addTaskArea = `<div class="container">
 var currentDayDetails = `<div> Today </div>`
 var next7Days = `<div> Next 7 days </div>`
 
-
 //Load tab details on loading of a page
-document.onload = loadInboxTabDetails();
+document.onload = loadTabDetails("inbox", inboxDetails);
 
-function loadInboxTabDetails() {
-    document.getElementById("inbox").style.backgroundColor = "#fff";
-    tabDetails.innerHTML = inboxDetails;
+function loadTabDetails(tabName, tabContent) {
+    document.getElementById(tabName).style.backgroundColor = "#fff";
+    tabDetails.innerHTML = tabContent;
 }
 
 //Hide settings list when clicked elsewhere
@@ -53,70 +51,69 @@ function deactivateTabs(item) {
 
 //activate tabs function
 function activateTab(item1, item2) {
-    tabDetails.innerHTML = "";
-    let counter = 0;
-    document.getElementById(item1).style.backgroundColor = "#fff";
-    item2.forEach(item => {
-        let timeStamp = item.getElementsByTagName("span")[1];
-        let timeDiff = Math.floor(moment.duration(moment(new Date()).diff(moment(taskArray[counter++].schedule))).asDays());
-        if (timeDiff < 0) {
-            timeStamp.textContent = `Well Done!!! You completed it ${Math.abs(timeDiff)} days before`;
-            timeStamp.style.color = "#006400";
-            timeStamp.style.fontWeight = 'bold';
-        }
-        else if (timeDiff == 0) {
-            timeStamp.textContent = `Task completed on time`;
-            timeStamp.style.color = "#228B22";
-            timeStamp.style.fontWeight = 'bold';
-        }
-        else if (timeDiff > 0) {
-            timeStamp.textContent = `Task delayed by ${Math.abs(timeDiff)} days`;
-            timeStamp.style.color = "red";
-            timeStamp.style.fontWeight = 'bold';
-        }
-        timeStamp.style.marginBottom = '15px';
-        let parent = item.childNodes[0];
-        parent.replaceChild(parent.childNodes[1], timeStamp);
-        tabDetails.innerHTML += item.innerHTML;
-    });
+    switch (item1) {
+        case "inbox":
+            loadTabDetails(item1, item2);
+            break;
+        case "currentDayCalendar":
+            loadTabDetails(item1, item2);
+            break;
+        case "calendar":
+            loadTabDetails(item1, item2);
+            break;
+        case "history":
+            tabDetails.innerHTML = "";
+            let counter = 0;
+            document.getElementById(item1).style.backgroundColor = "#fff";
+            item2.forEach(item => {
+                let timeStamp = item.getElementsByTagName("span")[1];
+                let timeDiff = Math.floor(moment.duration(moment(new Date()).diff(moment(taskArray[counter++].schedule))).asDays());
+                if (timeDiff < 0) {
+                    timeStamp.textContent = `Well Done!!! You completed it ${Math.abs(timeDiff)} days before`;
+                    timeStamp.style.color = "#006400";
+                    timeStamp.style.fontWeight = 'bold';
+                }
+                else if (timeDiff == 0) {
+                    timeStamp.textContent = `Task completed on time`;
+                    timeStamp.style.color = "#228B22";
+                    timeStamp.style.fontWeight = 'bold';
+                }
+                else if (timeDiff > 0) {
+                    timeStamp.textContent = `Task delayed by ${Math.abs(timeDiff)} days`;
+                    timeStamp.style.color = "red";
+                    timeStamp.style.fontWeight = 'bold';
+                }
+                timeStamp.style.marginBottom = '15px';
+                let parent = item.childNodes[0];
+                parent.replaceChild(parent.childNodes[1], timeStamp);
+                tabDetails.innerHTML += item.innerHTML;
+            });
+            break;
+    }
 }
 
 function handleTabs(tabName) {
     document.getElementById(tabName).addEventListener("click", function () {
         listOfTabs.forEach(item => {
             item != tabName ? deactivateTabs(item) : activateTab(tabName)
-        })
+        });
     })
 }
 
+function changeTabHandler(activeTab, tabDetails) {
+    tabs.forEach(tabName => {
+        tabName !== activeTab ? deactivateTabs(tabName) : activateTab(activeTab, tabDetails);
+    });
+}
+
 //Activate and Deactivate Tabs based on selection and also toggle tab details
-document.getElementById("inbox").addEventListener("click", function () {
-    deactivateTabs("currentDayCalendar");
-    deactivateTabs("calendar");
-    deactivateTabs("history");
-    activateTab("inbox", inboxDetails);
-});
+document.getElementById("inbox").addEventListener("click", changeTabHandler.bind(this, "inbox", inboxDetails));
 
-document.getElementById("currentDayCalendar").addEventListener("click", function () {
-    deactivateTabs("calendar");
-    deactivateTabs("inbox");
-    deactivateTabs("history");
-    activateTab("currentDayCalendar", currentDayDetails);
-});
+document.getElementById("currentDayCalendar").addEventListener("click", changeTabHandler.bind(this, "currentDayCalendar", currentDayDetails));
 
-document.getElementById("calendar").addEventListener("click", function () {
-    deactivateTabs("currentDayCalendar");
-    deactivateTabs("inbox");
-    deactivateTabs("history");
-    activateTab("calendar", next7Days);
-});
+document.getElementById("calendar").addEventListener("click", changeTabHandler.bind(this, "calendar", next7Days));
 
-document.getElementById("history").addEventListener("click", function () {
-    deactivateTabs("currentDayCalendar");
-    deactivateTabs("inbox");
-    deactivateTabs("calendar");
-    activateTab("history", completedTasks);
-});
+document.getElementById("history").addEventListener("click", changeTabHandler.bind(this, "history", completedTasks));
 
 document.getElementById("tabDetails").addEventListener("click", addTasks);
 
